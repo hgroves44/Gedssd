@@ -39,6 +39,11 @@
 #include "globals.hh"
 #include "G4PVPlacement.hh"
 #include "G4AssemblyVolume.hh"
+#include "G4SystemOfUnits.hh"
+
+//I am not sure why this class is here. I don't see it in the other .hh files except for the Testcan one. I will leave it for now. 
+  
+class G4AssemblyVolume;
 
 class DetectionSystemGedssd	
 {
@@ -47,15 +52,19 @@ public:
     ~DetectionSystemGedssd();
 
     G4int Build() ; //G4SDManager* mySDman);
-    //G4int PlaceDetector(G4LogicalVolume* expHallLog, G4int detectorNumber);
+    G4int PlaceDetector(G4LogicalVolume* expHallLog, G4int detectorNumber);
 
 private:
     // Assembly volumes
-    G4AssemblyVolume* fAssembly;
+    G4AssemblyVolume* fAssemblyGedssd;
 
-    //    SensitiveDetector* squareScintSD;
-    //    SensitiveDetector* angledScintSD;
+    //Logical Volumes
+    G4LogicalVolume* fThickDetectorLog;
+    G4LogicalVolume* fThinDetectorLog;
+    G4LogicalVolume* fThickDetectorCryoLog;
+    G4LogicalVolume* fCryoEndCapLog;
 
+    G4double fConvert;
     G4double fGeThickDetectorThickness;
     G4double fGeThinDetectorThickness;
     G4double fGeThickDetectorRadius;
@@ -64,45 +73,35 @@ private:
     G4double fGeThickDetectorCryoOutRad;
     G4double fGeThickDetectorCryoInnRad;
     G4double fGeThickDetectorCryoThickness;
+    G4double pi;
+    G4double fGeCryoEndCapOutRad;
+    G4double fGeCryoEndCapThickness;
 
-    //##################################################################
-    //### methods to construct all of the components of the detector ###
-    //##################################################################
-    //G4int ConstructWorlds();
-    G4int ConstructThinDetector();
-    G4int ConstructThickDetectorCryo();
-    G4int ConstructCryoEndCap();
-    G4int ConstructThickDetector();
+    //G4String fThinMaterial;
+    //G4String fThickMaterial;
+    //G4String fCryoMaterial;
+    //G4String fEndCapMaterial;
 
-    G4PVPlacement* fPhysiGeThinDetector;
-    G4PVPlacement* fPhysiGeThickDetector;
-    G4PVPlacement* fPhysiGeThickDetectoCryo; 
-    G4PVPlacement* fPhysiGeCryoEndCap;
-    
-    G4LogicalVolume* fLogicThinDetector;
-    G4LogicalVolume* fLogicGeThickDetectorCryo;
-    G4LogicalVolume* fLogicGeCryoEndCap;
-    G4LogicalVolume* fLogiGeThickDetector;
+    G4int BuildGedssd();
 
-    G4ThreeVector    fGeThinDetectorPos;
-    G4ThreeVector    fGeThickDetectorPos;
-    G4ThreeVector    fGeCryoEndCapPos1;
-    G4ThreeVector    fGeCryoEndCapPos2;
-    G4ThreeVector    fGeThickDetectorCryo;
-//Logical Volumes
-    //
-    //G4LogicalVolume* solidWorld;
-    //G4LogicalVolume* logicWorld;
-    //G4LogicalVolume* physiWorld;
-    //G4LogicalVolume* solidGeThickDetector;
-    //G4LogicalVolume* logicGeThickDetector;
-    //G4LogicalVolume* physiGeThickDetector;
-    //G4LogicalVolume* solidGeThinDetector;
-    //G4LogicalVolume* logicGeThinDetector;
-    //G4LogicalVolume* physiGeThinDetector;
-    //G4LogicalVolume* GeThickDetectorMaterial;
-    //G4LogicalVolume* GeThinDetectorMaterial;
-    //G4LogicalVolume* fWorldLength;
+    G4ThreeVector  move;
+    G4ThreeVector  direction;
+    G4ThreeVector  thinDirection;
+    G4ThreeVector  thinPosition;
+    G4ThreeVector  thickDirection;
+    G4ThreeVector  thickPosition;
+    G4ThreeVector  cryoDirection;
+    G4ThreeVector  cryoPosition;
+    G4ThreeVector  capDirection;
+    G4ThreeVector  cap1Position;
+    G4ThreeVector  cap2Position;
+
+    G4RotationMatrix* rotate;
+    G4RotationMatrix* thinRotation;
+    G4RotationMatrix* thickRotation;
+    G4RotationMatrix* cryoRotation;
+    G4RotationMatrix* capRotation;
+ 
 };
 
 #endif
