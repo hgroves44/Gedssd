@@ -848,13 +848,14 @@ void DetectorConstruction::AddDetectionSystemSceptar(G4int ndet) {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Adding in the AddDetectionSystemGedssd so that I can have the option of adding in that detector
 
-void DetectorConstruction::AddDetectionSystemGedssd(G4int ndet) {
+void DetectorConstruction::AddDetectionSystemGedssd( G4int ndet ) {
   if(fLogicWorld == NULL) {
 	Construct();
   }
 
   DetectionSystemGedssd* pGedssd = new DetectionSystemGedssd();
   pGedssd->Build();
+  pGedssd->PlaceDetector( fLogicWorld, ndet );
 
   HistoManager::Instance().Gedssd(true);
 }

@@ -384,7 +384,7 @@ DetectorMessenger::~DetectorMessenger()
 	 delete fAddDetectionSystemDescantCartCmd;
 	 delete fAddDetectionSystemDescantSpherCmd;
 //Line below is for Gedssd
-    delete fAddDetectionSytemGedssdCmd;
+    delete fAddDetectionSystemGedssdCmd;
     delete fAddDetectionSystemSceptarCmd;
     delete fAddDetectionSystemSpiceCmd;
     delete fAddDetectionSystemSpiceV02Cmd;
@@ -541,6 +541,7 @@ void DetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
         fDetector->AddDetectionSystemTestcan(fAddDetectionSystemTestcanCmd->GetNew3VectorValue(newValue));
     }
 //adding if statement for gedssd
+//I am trying out not putting in any input, since I don't have a detector number nor a 3vector input, like Joey does with Testcan. If that doesn't work, I will adjust to take a 3vector input. 
     if(command == fAddDetectionSystemGedssdCmd ){
 	fDetector->AddDetectionSystemGedssd(fAddDetectionSystemGedssdCmd->GetNewIntValue(newValue));
     }
@@ -561,7 +562,7 @@ void DetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
         fDetector->AddDetectionSystemGriffinBackDetector(fAddDetectionSystemGriffinBackDetectorCmd->GetNewIntValue(newValue));
     }
     //  if(command == fAddDetectionSystemGriffinPositionConfigCmd ) {
-        fDetector->AddDetectionSystemGriffinPositionConfig(fAddDetectionSystemGriffinPositionConfigCmd->GetNew3VectorValue(newValue));
+    //    fDetector->AddDetectionSystemGriffinPositionConfig(fAddDetectionSystemGriffinPositionConfigCmd->GetNew3VectorValue(newValue));
     //	}
     if(command == fAddDetectionSystemGriffinCustomDetectorCmd ) {
         fDetector->AddDetectionSystemGriffinCustomDetector(fAddDetectionSystemGriffinCustomDetectorCmd->GetNewIntValue(newValue));
