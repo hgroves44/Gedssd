@@ -44,7 +44,9 @@ DetectionSystemGedssd::DetectionSystemGedssd() :
     fThickDetectorLog(0),
     fThinDetectorLog(0),
     fThickDetectorCryoLog(0),
-    fCryoEndCapLog(0)
+    fCryoEndCapLog(0),
+    fCloverCrystalLog(0),
+    fCloverCryoLog(0)
    
 {
     
@@ -63,6 +65,15 @@ DetectionSystemGedssd::DetectionSystemGedssd() :
     fSpacing = 5*mm;
     pi = 3.14159265358979323846;
 
+    //Extra parametersa nd dimensions for the clover
+    CloverCrystalLength = 70.0*mm;
+    CloverCrystalRadius = 21.9*mm;
+    InnerRadius = 0.*mm;
+    CloverCryox = 103.*mm;
+    CloverCryoy = 103.*mm;
+    CloverCryoz = CloverCrystalLength + 30.0*mm;
+     
+
 }
     
 DetectionSystemGedssd::~DetectionSystemGedssd() {
@@ -71,12 +82,15 @@ DetectionSystemGedssd::~DetectionSystemGedssd() {
      delete fThinDetectorLog;
      delete fThickDetectorCryoLog;
      delete fCryoEndCapLog;
+     delete fCloverCrystalLog;
+     delete fCloverCryoLog;
 }
 
 //In the original file, the parts were all constructed differently. For this go, since I am trying to mimic the structure of Testcan, I will put them all in one construction function and see how that goes. I have the old structure saved as indicted in the heading of the file. 
 
 G4int DetectionSystemGedssd::Build() {
     fAssemblyGedssd = new G4AssemblyVolume();
+    fAssemblyClover = new G4AssemblyVolume();
 
     BuildGedssd();
 
@@ -89,8 +103,40 @@ G4int DetectionSystemGedssd::PlaceDetector(G4LogicalVolume* expHallLog, G4int de
     G4RotationMatrix* rotate = new G4RotationMatrix;
     G4ThreeVector move = G4ThreeVector(0., 0., 0.);
 
+    //(6/21/17) I am going to need a separate for loop for the two assembly volumes, since I need different numbers of them. I will need 9 clovers and only one gedssd. This means that I will need to try and orient the clovers around the central gedssd, but I am going to start with making sure I have the measurements right for just one of them, and then I can begin rotating and adding more. I will be referecning Descant to see how they handle the moving and rotating in this PlaceDetector function.
+    //So Sceptar defines their move functions outside of the for loop then calls them all move later one in order ot only have to do the MakeImprint function once. I will try doing this. 
+    G4double fCloverRotate = 10.*deg;    
 
-    for(G4int i=1; i<2; i++) {
+    G4RotationMatrix* rotateClover1 = new G4RotationMatrix;
+    rotateClover1->rotateX(90.*deg);
+    rotateClover1->rotateY(45.*deg);
+    rotateClover1->rotateY(180.*deg);
+    G4ThreeVector moveClover1(-(CloverCryox/2. + 2.1*cm), CloverCryoy/2. + 2.1*cm, CloverCryoz/2. + fGeThickDetectorThickness/2. + 2.175*cm);
+
+    G4RotationMatrix* rotateClover2 = new G4RotationMatrix;
+    rotateClover2->rotateX(90.*deg);
+    rotateClover2->rotateY(45.*deg);
+    rotateClover2->rotateY(180.*deg);
+    G4ThreeVector moveClover2(CloverCryox/2. + 2.1*cm, -(CloverCryoy/2. + 2.1*cm), CloverCryoz/2. + fGeThickDetectorThickness/2. + 4.715*cm);
+
+    for(G4int i=0; i<2; i++) {
+	
+	if(i==0) {
+	   rotate = rotateClover1;
+	   move = moveClover1;
+	   move.rotateZ(10.*deg);
+	   rotate->rotateZ(10.*deg);
+	} else if(i==1) {
+	   rotate = rotateClover2;
+	   move = moveClover2;
+	   move.rotateZ(10.*deg);
+	   rotate->rotateZ(10.*deg);
+	}
+  
+    	fAssemblyClover->MakeImprint(expHallLog, move, rotate); 	
+    }
+
+    for(G4int j=1; j<2; j++) {
 	
 	fAssemblyGedssd->MakeImprint(expHallLog, move, rotate);
     }
@@ -212,6 +258,68 @@ G4int DetectionSystemGedssd::BuildGedssd() {
 
     fAssemblyGedssd->AddPlacedVolume(fCryoEndCapLog, cap1Position, capRotation);
     fAssemblyGedssd->AddPlacedVolume(fCryoEndCapLog, cap2Position, capRotation);
+
+    //Now I will do the building for the Clover
+    
+    //Define materials, then solids, then rotation and placement, then logical volumes. 
+
+    G4Material* fCloverCrystalMaterial = G4Material::GetMaterial("Germanium");
+    if( !fCloverCrystalMaterial) {
+	G4cout << "----> Material Germanium not found, cannot build!" << G4endl;
+	return 0;
+    }
+
+    G4Material* fCloverCryoMaterial = G4Material::GetMaterial("Aluminum");
+    if( !fCloverCryoMaterial) {
+	G4cout << "----> Material Aluminum not found, cannot build!" << G4endl;
+	return 0;
+    }
+
+    //Define the solid objects
+    
+    G4Tubs* CloverCrystal = new G4Tubs("CloverCrystal", InnerRadius, CloverCrystalRadius, 35.0*mm, 0., 2*pi);
+    G4Box* CloverCryo = new G4Box("CloverCryo", CloverCryox/2., CloverCryoy/2., CloverCryoz/2.);
+
+    //Define visualization attributes
+    
+    G4VisAttributes* CloverCrystalVisAtt = new G4VisAttributes(G4Colour(0.5, 0.5, 0.5));
+    CloverCrystalVisAtt->SetVisibility(true);
+    G4VisAttributes* CloverCryoVisAtt = new G4VisAttributes(G4Colour(0.0, 1.0, 1.0));
+    CloverCryoVisAtt->SetVisibility(true);
+
+    //Define rotation and placement for crystals
+    //There are 4 different positions that the clovers will be in, so define all of those, and for now have no rotation.
+    
+    CrystalPosition1 = G4ThreeVector(CloverCrystalRadius, CloverCrystalRadius, 9.5*mm);
+    CrystalPosition2 = G4ThreeVector(CloverCrystalRadius, -(CloverCrystalRadius), 9.5*mm);
+    CrystalPosition3 = G4ThreeVector(-(CloverCrystalRadius), -(CloverCrystalRadius), 9.5*mm);
+    CrystalPosition4 = G4ThreeVector(-(CloverCrystalRadius), CloverCrystalRadius, 9.5*mm);
+    G4RotationMatrix* crystalRotate = new G4RotationMatrix;
+
+    //Logical volume for Crystals
+    
+    if( fCloverCrystalLog == NULL) {
+	fCloverCrystalLog = new G4LogicalVolume(CloverCrystal, fCloverCrystalMaterial, "CloverCrystal", 0, 0, 0);
+	fCloverCrystalLog->SetVisAttributes(CloverCrystalVisAtt);
+    }
+    fAssemblyClover->AddPlacedVolume(fCloverCrystalLog, CrystalPosition1, crystalRotate);
+    fAssemblyClover->AddPlacedVolume(fCloverCrystalLog, CrystalPosition2, crystalRotate);
+    fAssemblyClover->AddPlacedVolume(fCloverCrystalLog, CrystalPosition3, crystalRotate);
+    fAssemblyClover->AddPlacedVolume(fCloverCrystalLog, CrystalPosition4, crystalRotate);
+
+    //Define position and rotation for cryo chamber
+    
+    CloverCryoPosition = G4ThreeVector(0., 0., 0.);
+    G4RotationMatrix* CloverCryoRotate = new G4RotationMatrix;
+
+    //Logical volume for Cryo chamber
+
+    if( fCloverCryoLog == NULL) {
+	fCloverCryoLog = new G4LogicalVolume(CloverCryo, fCloverCryoMaterial, "CloverCry", 0, 0, 0);
+	fCloverCryoLog->SetVisAttributes(CloverCryoVisAtt);
+    }
+    fAssemblyClover->AddPlacedVolume(fCloverCryoLog, CloverCryoPosition, CloverCryoRotate);
+
 
     return 1;
 } 
