@@ -57,12 +57,15 @@ public:
 private:
     // Assembly volumes
     G4AssemblyVolume* fAssemblyGedssd;
+    G4AssemblyVolume* fAssemblyClover;
 
     //Logical Volumes
     G4LogicalVolume* fThickDetectorLog;
     G4LogicalVolume* fThinDetectorLog;
     G4LogicalVolume* fThickDetectorCryoLog;
     G4LogicalVolume* fCryoEndCapLog;
+    G4LogicalVolume* fCloverCrystalLog;
+    G4LogicalVolume* fCloverCryoLog;
 
     G4double fConvert;
     G4double fGeThickDetectorThickness;
@@ -76,11 +79,13 @@ private:
     G4double pi;
     G4double fGeCryoEndCapOutRad;
     G4double fGeCryoEndCapThickness;
-
-    //G4String fThinMaterial;
-    //G4String fThickMaterial;
-    //G4String fCryoMaterial;
-    //G4String fEndCapMaterial;
+    G4double CloverCrystalLength;
+    G4double CloverCrystalRadius;
+    G4double InnerRadius;
+    G4double CloverCryox;
+    G4double CloverCryoy;
+    G4double CloverCryoz;
+    G4double fCloverRotate;
 
     G4int BuildGedssd();
 
@@ -95,12 +100,37 @@ private:
     G4ThreeVector  capDirection;
     G4ThreeVector  cap1Position;
     G4ThreeVector  cap2Position;
+    G4ThreeVector  CrystalPosition1;
+    G4ThreeVector  CrystalPosition2;
+    G4ThreeVector  CrystalPosition3;
+    G4ThreeVector  CrystalPosition4;
+    G4ThreeVector  CloverCryoPosition;
+    G4ThreeVector  moveClover1;
+    G4ThreeVector  moveClover2;
+    G4ThreeVector  moveClover3;
+    G4ThreeVector  moveClover4;
+    G4ThreeVector  moveClover5;
+    G4ThreeVector  moveClover6;
+    G4ThreeVector  moveClover7;
+    G4ThreeVector  moveClover8;
+    G4ThreeVector  moveClover9;
 
     G4RotationMatrix* rotate;
     G4RotationMatrix* thinRotation;
     G4RotationMatrix* thickRotation;
     G4RotationMatrix* cryoRotation;
     G4RotationMatrix* capRotation;
+    G4RotationMatrix* crystalRotate;
+    G4RotationMatrix* CloverCryoRotate;
+    G4RotationMatrix* rotateClover1;
+    G4RotationMatrix* rotateClover2;
+    G4RotationMatrix* rotateClover3;
+    G4RotationMatrix* rotateClover4;
+    G4RotationMatrix* rotateClover5;
+    G4RotationMatrix* rotateClover6;
+    G4RotationMatrix* rotateClover7;
+    G4RotationMatrix* rotateClover8;
+    G4RotationMatrix* rotateClover9;
  
 };
 
