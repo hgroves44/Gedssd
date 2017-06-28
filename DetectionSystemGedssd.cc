@@ -105,33 +105,58 @@ G4int DetectionSystemGedssd::PlaceDetector(G4LogicalVolume* expHallLog, G4int de
 
     //(6/21/17) I am going to need a separate for loop for the two assembly volumes, since I need different numbers of them. I will need 9 clovers and only one gedssd. This means that I will need to try and orient the clovers around the central gedssd, but I am going to start with making sure I have the measurements right for just one of them, and then I can begin rotating and adding more. I will be referecning Descant to see how they handle the moving and rotating in this PlaceDetector function.
     //So Sceptar defines their move functions outside of the for loop then calls them all move later one in order ot only have to do the MakeImprint function once. I will try doing this. 
-    G4double fCloverRotate = 10.*deg;    
-
+    
     G4RotationMatrix* rotateClover1 = new G4RotationMatrix;
     rotateClover1->rotateX(90.*deg);
     rotateClover1->rotateY(45.*deg);
     rotateClover1->rotateY(180.*deg);
     G4ThreeVector moveClover1(-(CloverCryox/2. + 2.1*cm), CloverCryoy/2. + 2.1*cm, CloverCryoz/2. + fGeThickDetectorThickness/2. + 2.175*cm);
 
-    G4RotationMatrix* rotateClover2 = new G4RotationMatrix;
-    rotateClover2->rotateX(90.*deg);
-    rotateClover2->rotateY(45.*deg);
-    rotateClover2->rotateY(180.*deg);
-    G4ThreeVector moveClover2(CloverCryox/2. + 2.1*cm, -(CloverCryoy/2. + 2.1*cm), CloverCryoz/2. + fGeThickDetectorThickness/2. + 4.715*cm);
+    //G4RotationMatrix* rotateClover2 = new G4RotationMatrix;
+    //rotateClover2->rotateX(90.*deg);
+    //rotateClover2->rotateY(45.*deg);
+    //rotateClover2->rotateY(180.*deg);
+    //G4ThreeVector moveClover2(CloverCryox/2. + 2.1*cm, -(CloverCryoy/2. + 2.1*cm), CloverCryoz/2. + fGeThickDetectorThickness/2. + 4.715*cm);
+
+    //G4RotationMatrix* rotateClover3 = new G4RotationMatrix;
+    //rotateClover3->rotateY(90.*deg);
+    //rotateClover3->rotateX(-45.*deg);
+    //rotateClover3->rotateX(180.*deg);
+    //G4ThreeVector moveClover3(CloverCryox/2. + 2.1*cm, CloverCryoy/2. + 2.1*cm, CloverCryoz/2. + fGeThickDetectorThickness/2. + 4.715*cm);
+
+    //G4RotationMatrix* rotateClover4 = new G4RotationMatrix;
+    //rotateClover4->rotateY(90.*deg);
+    //rotateClover4->rotateX(-45.*deg);
+    //G4ThreeVector moveClover4(-(CloverCryox/2. + 2.1*cm), -(CloverCryoy/2. + 2.1*cm), CloverCryoz/2. + fGeThickDetectorThickness/2. + 2.175*cm);
+
+    G4RotationMatrix* rotateClover9 = new G4RotationMatrix;
+    rotateClover9->rotateZ(45.*deg);
+    rotateClover9->rotateX(90.*deg); //This was very good! Not in original file but gets us closer to placing behind the gedsdd, which I think was the intent in the first place. 
+    G4ThreeVector moveClover9(0., 0., 0.);
 
     for(G4int i=0; i<2; i++) {
 	
 	if(i==0) {
 	   rotate = rotateClover1;
 	   move = moveClover1;
-	   move.rotateZ(10.*deg);
-	   rotate->rotateZ(10.*deg);
+	   //move.rotateZ(10.*deg);
+	   //rotate->rotateZ(10.*deg);
 	} else if(i==1) {
-	   rotate = rotateClover2;
-	   move = moveClover2;
-	   move.rotateZ(10.*deg);
-	   rotate->rotateZ(10.*deg);
-	}
+	   rotate = rotateClover9;
+	   move = moveClover9;
+	   //move.rotateZ(10.*deg);
+	   //rotate->rotateZ(10.*deg);
+	} //else if(i==2) {
+	  // rotate = rotateClover3;
+	  // move = moveClover3;
+	  // move.rotateZ(10.*deg);
+	  // rotate->rotateZ(10.*deg);
+	//} else if(i==3) {
+	  // rotate = rotateClover4;
+ 	  // move = moveClover4;
+	  // move.rotateZ(10.*deg);
+	  // rotate->rotateZ(10.*deg);
+	//}
   
     	fAssemblyClover->MakeImprint(expHallLog, move, rotate); 	
     }
@@ -290,10 +315,10 @@ G4int DetectionSystemGedssd::BuildGedssd() {
     //Define rotation and placement for crystals
     //There are 4 different positions that the clovers will be in, so define all of those, and for now have no rotation.
     
-    CrystalPosition1 = G4ThreeVector(CloverCrystalRadius, CloverCrystalRadius, 9.5*mm);
-    CrystalPosition2 = G4ThreeVector(CloverCrystalRadius, -(CloverCrystalRadius), 9.5*mm);
-    CrystalPosition3 = G4ThreeVector(-(CloverCrystalRadius), -(CloverCrystalRadius), 9.5*mm);
-    CrystalPosition4 = G4ThreeVector(-(CloverCrystalRadius), CloverCrystalRadius, 9.5*mm);
+    CrystalPosition1 = G4ThreeVector(CloverCrystalRadius, CloverCrystalRadius, 0.);
+    CrystalPosition2 = G4ThreeVector(CloverCrystalRadius, -(CloverCrystalRadius), 0.);
+    CrystalPosition3 = G4ThreeVector(-(CloverCrystalRadius), -(CloverCrystalRadius), 0.);
+    CrystalPosition4 = G4ThreeVector(-(CloverCrystalRadius), CloverCrystalRadius, 0. );
     G4RotationMatrix* crystalRotate = new G4RotationMatrix;
 
     //Logical volume for Crystals
