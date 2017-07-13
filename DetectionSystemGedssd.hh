@@ -86,6 +86,26 @@ private:
     G4double CloverCryoy;
     G4double CloverCryoz;
     G4double fCloverRotate;
+    G4double theta;
+    G4double theta1;
+    G4double theta2;
+    G4double theta3;
+    G4double theta4;
+    G4double theta5;
+    G4double theta6;
+    G4double theta7;
+    G4double theta8;
+    G4double theta9;
+    G4double phi;
+    G4double beta;
+    G4double gamma;
+    G4double x;
+    G4double y;
+    G4double z1;
+    G4double z9;
+    G4double position1;
+    G4double position9;
+    
 
     G4int BuildGedssd();
 
@@ -114,7 +134,10 @@ private:
     G4ThreeVector  moveClover7;
     G4ThreeVector  moveClover8;
     G4ThreeVector  moveClover9;
+    G4ThreeVector  Ta;
+    G4ThreeVector  Tm;
 
+    G4RotationMatrix* Rm;
     G4RotationMatrix* rotate;
     G4RotationMatrix* thinRotation;
     G4RotationMatrix* thickRotation;
@@ -122,16 +145,9 @@ private:
     G4RotationMatrix* capRotation;
     G4RotationMatrix* crystalRotate;
     G4RotationMatrix* CloverCryoRotate;
-    G4RotationMatrix* rotateClover1;
-    G4RotationMatrix* rotateClover2;
-    G4RotationMatrix* rotateClover3;
-    G4RotationMatrix* rotateClover4;
-    G4RotationMatrix* rotateClover5;
-    G4RotationMatrix* rotateClover6;
-    G4RotationMatrix* rotateClover7;
-    G4RotationMatrix* rotateClover8;
-    G4RotationMatrix* rotateClover9;
  
+    //G4Transform3D Tr;
+
 };
 
 #endif
