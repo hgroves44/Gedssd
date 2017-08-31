@@ -1,0 +1,8 @@
+This file serves as a manual update log to complement changes reflected in the GitHub history. Here, the dates and descriptions of changes made or files added will be catalogued for quick reference and more detailed explanation. 
+
+
+August 31, 2017
+
+* I have backed up the latest versions of all files that had to be changed to accomodate the gedssd. As of now, the Gedssd geometry files contains the clover information. I will begin the process of creating new files for the Clover Array and then making all adjustments to the necessary files. Those will be added as they are created and shown to work successfully. 
+
+* I created the geometry file for the Clover Array and deleted all of the clover information from the gedssd geometry file. 
